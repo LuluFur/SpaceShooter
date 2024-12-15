@@ -15,7 +15,7 @@ class BackgroundParticle {
   // creation of a particle.
   createParticle() {
     noStroke();
-    fill('rgba(200,169,169,0.01)');
+    fill('rgba(200,169,169,0.1)');
     circle(this.x, this.y, this.r);
   }
 
@@ -36,7 +36,7 @@ class BackgroundParticle {
     particles.forEach(element => {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < 85) {
-        stroke('rgba(255,255,255,0.01)');
+        stroke('rgba(255,255,255,0.1)');
         line(this.x, this.y, element.x, element.y);
       }
     });
