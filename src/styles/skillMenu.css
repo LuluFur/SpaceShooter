@@ -1,0 +1,146 @@
+#skill-menu {
+  display: none;
+  width: 1080px;
+  height: 720px;
+  background-color: rgba(17, 17, 17, 0.95);
+  border: 2px solid #fff;
+  border-radius: 15px;
+  margin: 20px auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0px 10px 30px rgba(255, 255, 255, 0.5);
+  color: white;
+  font-family: Monaco, Monospace;
+  text-align: center;
+  z-index: 1000;
+}
+
+#skill-columns {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: stretch;
+  height: 80%;
+  padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.skill-bar-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 300px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--skill-color, rgba(255, 255, 255, 0.3));
+  border-radius: 10px;
+  padding: 20px 10px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+  overflow: visible;
+  transition: all 0.3s ease;
+}
+
+.skill-bar-container:hover {
+  border-color: var(--skill-color, rgba(255, 255, 255, 0.6));
+  box-shadow: 0 0 30px var(--skill-color, rgba(255, 255, 255, 0.2));
+  transform: translateY(-5px);
+}
+
+.skill-name {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.skill-level {
+  font-size: 18px;
+  margin: 5px 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.skill-description {
+  font-size: 16px;
+  margin: 10px 0;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  padding: 0 15px;
+  flex-grow: 1;
+}
+
+.upgrade-button {
+  width: 150px;
+  height: 75px;
+  font-size: 24px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--skill-color, rgba(255, 255, 255, 0.3));
+  color: white;
+  text-align: center;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 15px 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.upgrade-button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.upgrade-button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.upgrade-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--skill-color, rgba(255, 255, 255, 0.6));
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px var(--skill-color, rgba(255, 255, 255, 0.2));
+}
+
+.upgrade-button:hover span {
+  padding-right: 25px;
+}
+
+.upgrade-button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.skill-minibars {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.skill-mini-bar {
+  width: 45px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.skill-mini-bar.achieved {
+  background-color: var(--skill-color, red);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}

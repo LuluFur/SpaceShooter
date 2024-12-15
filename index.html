@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Game</title>
+
+    <!-- Load p5.js before p5.sound.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+
+    <script src="src/game/p5Instance.js"></script>
+
+    <!-- Effects -->
+    <script src="src/effects/BackgroundParticles.js"></script>
+    <script src="src/effects/EffectManager.js"></script>
+    <script src="src/effects/ParticleEffect.js"></script>
+    <script src="src/effects/TextEffect.js"></script>
+
+    <!-- Entities -->
+    <script src="src/entities/GameObject.js"></script>
+    <script src="src/entities/Alien.js"></script>
+    <script src="src/entities/AlienRammer.js"></script>
+    <script src="src/entities/AlienStealth.js"></script>
+    <script src="src/entities/Asteroid.js"></script>
+    <script src="src/entities/MiniBossAlien.js"></script>
+    <script src="src/entities/BossAlien.js"></script>
+    <script src="src/entities/Player.js"></script>
+    <script src="src/entities/Projectile.js"></script>
+    <script src="src/entities/XPOrb.js"></script>
+
+    <!-- Game Logic -->
+    <script src="src/game/AlienSpawning.js"></script>
+    <script src="src/game/AsteroidSpawning.js"></script>
+    <script src="src/game/DeathMenu.js"></script>
+    <script src="src/game/GameState.js"></script>
+    <script src="src/game/SoundManager.js"></script>
+    <script src="src/game/XPSpawner.js"></script>
+
+    <!-- Skills -->
+    <script src="src/skills/SkillMenu.js"></script>
+
+    <!-- Main Sketch -->
+    <script src="sketch.js"></script>
+    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/skillMenu.css">
+    <link rel="stylesheet" href="src/styles/deathMenu.css">
+  </head>
+  <body>
+    <div id="game-header">
+      <div id="score">Score: 0</div>
+      <div id="game-title">SPACE SHOOTER!</div>
+      <div id="time-played">Time: 00:00</div>
+    </div>
+    
+    <div id="game-container">
+      <div id="main"></div>
+      <div id="skill-menu">
+        <h2>⭐ Choose A Skill To Upgrade! ⭐</h2>
+        <div id="skill-columns"></div>
+      </div>
+    </div>
+  </body>
+</html>

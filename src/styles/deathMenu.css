@@ -1,0 +1,51 @@
+.death-menu {
+  display: none;
+  width: 1080px;
+  height: 720px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 2px solid #ff0000;
+  border-radius: 15px;
+  margin: 20px auto;
+  color: white;
+  font-family: Monaco, Monospace;
+  text-align: center;
+  position: relative;
+}
+
+.death-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+.death-title {
+  font-size: 48px;
+  color: #ff0000;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.death-stats {
+  font-size: 24px;
+  margin: 20px 0;
+}
+
+.retry-button {
+  padding: 15px 30px;
+  font-size: 24px;
+  background-color: #ff0000;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.retry-button:hover {
+  background-color: #ff3333;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
