@@ -20,6 +20,8 @@ A 2D space shooter game built using **p5.js** and modern JavaScript. The player 
 - **p5.sound** Add-on
 - **HTML/CSS/JS**
 
+---
+
 ## 🧑‍💻 Credits
 - Developed by LuluFur
 - Special thanks to the p5.js community for an awesome library.
