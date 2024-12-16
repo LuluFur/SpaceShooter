@@ -29,7 +29,7 @@ class BackgroundParticle {
       if (dis < this.range) {
         push();
         //blur effect
-        drawingContext.shadowBlur = 100;
+        drawingContext.shadowBlur = 10;
         drawingContext.shadowColor = 'rgba(255, 255, 255, 0.5)';
         drawingContext.shadowOffsetX = 0;
         drawingContext.shadowOffsetY = 0;
