@@ -19,9 +19,6 @@ class BackgroundParticle {
     drawingContext.shadowColor = 100;
     drawingContext.shadowOffsetX = 0;
     drawingContext.shadowOffsetY = 0;
-    
-    stroke(grayValue); // Use the calculated grayscale value
-    line(this.x, this.y, element.x, element.y);
 
     circle(this.x, this.y, this.r);
     
