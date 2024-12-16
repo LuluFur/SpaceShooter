@@ -29,11 +29,20 @@ class BackgroundParticle {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
         push();
+        //blur effect
+        drawingContext.shadowBlur = 20;
+        drawingContext.shadowColor = 'rgba(255, 255, 255, 0.5)';
+        drawingContext.shadowOffsetX = 0;
+        drawingContext.shadowOffsetY = 0;
+        
         // Map the distance to grayscale intensity: closer -> brighter, farther -> darker
         let grayValue = map(dis, 0, this.range, 150, 0);
         grayValue = constrain(grayValue, 0, 150); // Ensure grayscale stays within bounds
         stroke(grayValue); // Use the calculated grayscale value
         line(this.x, this.y, element.x, element.y);
+
+        //remove blur
+        drawingContext.shadowBlur = 0;
         pop();
       }
     });
