@@ -29,10 +29,10 @@ class BackgroundParticle {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
         push();
-        // Map distance to alpha, with closer distances having higher alpha, but never fully white
-        let alpha = constrain(map(dis, this.range, 0, 0, this.opacity * 0.9), 0, this.opacity);
-        if (alpha >= this.opacity) alpha = this.opacity;
-        stroke(`rgba(255,255,255,${alpha})`); // Subtle white line with capped alpha
+        // Map distance to grayscale intensity (darker for farther distances)
+        let grayValue = map(dis, 0, this.range, 200, 30); // Brighter when close, darker when far
+        grayValue = constrain(grayValue, 30, 200); // Ensure within a valid grayscale range
+        stroke(grayValue); // Use grayscale value for color
         line(this.x, this.y, element.x, element.y);
         pop();
       }
