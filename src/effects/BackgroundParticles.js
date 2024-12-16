@@ -6,13 +6,27 @@ class BackgroundParticle {
     this.xSpeed = random(-0.2, 0.2);
     this.ySpeed = random(-0.1, 0.15);
     this.range = 100; // Maximum distance for visible lines
+    this.opacity = 0.1;
   }
 
   createParticle() {
     push();
     noStroke();
     fill(`rgba(255,255,255,${this.opacity})`); // White with low alpha
+
+    //blur effect
+    drawingContext.shadowBlur = 10;
+    drawingContext.shadowColor = grayValue;
+    drawingContext.shadowOffsetX = 0;
+    drawingContext.shadowOffsetY = 0;
+    
+    stroke(grayValue); // Use the calculated grayscale value
+    line(this.x, this.y, element.x, element.y);
+
     circle(this.x, this.y, this.r);
+    
+    //remove blur
+    drawingContext.shadowBlur = 0;
     pop();
   }
 
