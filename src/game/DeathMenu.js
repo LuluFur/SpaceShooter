@@ -63,7 +63,7 @@ function resetGame() {
   spawnAsteroids(5);
   
   // Play start sound
-  playSound('gameStartSound');
+  //playSound('gameStartSound');
 }
 
 // Make retry function available globally
