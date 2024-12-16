@@ -29,9 +29,9 @@ class BackgroundParticle {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
         push();
-        // Map distance to alpha, with closer distances having higher visibility
-        let alpha = constrain(map(dis, this.range, 0, 0, this.opacity), 0, this.opacity);
-        stroke(`rgba(255,255,255,${alpha})`); // Subtle white line with mapped alpha
+        // Map distance to alpha, with closer distances having higher alpha, but never fully white
+        let alpha = constrain(map(dis, this.range, 0, 0, this.opacity * 0.9), 0, this.opacity);
+        stroke(`rgba(255,255,255,${alpha})`); // Subtle white line with capped alpha
         line(this.x, this.y, element.x, element.y);
         pop();
       }
