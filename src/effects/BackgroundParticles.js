@@ -29,10 +29,10 @@ class BackgroundParticle {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
         push();
-        // Map distance to grayscale intensity (darker for farther distances)
-        let grayValue = map(dis, 0, this.range, 200, 30); // Brighter when close, darker when far
-        grayValue = constrain(grayValue, 30, 200); // Ensure within a valid grayscale range
-        stroke(grayValue); // Use grayscale value for color
+        // Map the distance to grayscale intensity: closer -> brighter, farther -> darker
+        let grayValue = map(dis, 0, this.range, 150, 0);
+        grayValue = constrain(grayValue, 0, 150); // Ensure grayscale stays within bounds
+        stroke(grayValue); // Use the calculated grayscale value
         line(this.x, this.y, element.x, element.y);
         pop();
       }
