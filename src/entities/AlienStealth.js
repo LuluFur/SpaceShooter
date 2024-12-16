@@ -90,7 +90,7 @@ class AlienStealth extends Alien {
 
     // Trigger flashing effect on damage
     this.isFlashing = true;
-    this.flashTimer = getP5().millis();
+    this.flashTimer = millis();
     return false;
   }
 }
