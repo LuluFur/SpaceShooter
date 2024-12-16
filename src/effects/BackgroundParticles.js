@@ -42,7 +42,7 @@ class BackgroundParticle {
       if (dis < this.range) {
         push();
         // constrain opacity of line connections
-        let alpha = constrain(map(dis, 0, this.range, 0.1, 0), 0, this.opacity * 2);
+        let alpha = clamp(map(dis, 0, this.range, 0.1, 0), 0, this.opacity * 2);
         stroke(`rgba(255,255,255,${alpha})`);
         line(this.x, this.y, element.x, element.y);
         pop();
