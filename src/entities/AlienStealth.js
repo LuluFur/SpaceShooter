@@ -21,7 +21,7 @@ class AlienStealth extends Alien {
     
 
     // Handle visibility toggle
-    const currentTime = p5.millis();
+    const currentTime = millis();
     if (this.isVisible && currentTime - this.visibilityTimer > this.visibilityDuration) {
       this.isVisible = false;
       this.visibilityTimer = currentTime;
@@ -34,21 +34,21 @@ class AlienStealth extends Alien {
       this.isFlashing = false; // End flashing after 200ms
     }
 
-    const angleToPlayer = p5.atan2(
+    const angleToPlayer = atan2(
       entities.player.position.y - this.position.y,
       entities.player.position.x - this.position.x
     );
 
-    this.direction = p5.degrees(angleToPlayer); // Update direction to face the player
+    this.direction = degrees(angleToPlayer); // Update direction to face the player
 
     if (this.isVisible) {
       // Normal alien update logic
       super.update();
     } else {
       // Hidden mode: faster movement and ramming behavior
-      const targetVelocity = p5.createVector(
-        p5.cos(angleToPlayer),
-        p5.sin(angleToPlayer)
+      const targetVelocity = createVector(
+        cos(angleToPlayer),
+        sin(angleToPlayer)
       ).mult(this.maxSpeed * this.intelligenceLevel * 1.5); // Increased speed
 
       this.velocity.lerp(targetVelocity, 0.2);
@@ -58,25 +58,25 @@ class AlienStealth extends Alien {
 
   draw() {
     
-    p5.push();
-    p5.translate(this.position.x, this.position.y);
-    p5.rotate(p5.radians(this.direction) + p5.HALF_PI);
+    push();
+    translate(this.position.x, this.position.y);
+    rotate(radians(this.direction) + HALF_PI);
 
     if (this.isVisible || this.isFlashing) {
       // Normal appearance or flashing
-      p5.stroke(100, 100, 100, 255); // Solid color when visible
-      p5.strokeWeight(2);
-      p5.noFill();
-      p5.triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
+      stroke(100, 100, 100, 255); // Solid color when visible
+      strokeWeight(2);
+      noFill();
+      triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
     } else {
       // Stealth appearance
-      p5.stroke(50, 50, 50, 80); // High transparency
-      p5.strokeWeight(1);
-      p5.noFill();
-      p5.triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
+      stroke(50, 50, 50, 80); // High transparency
+      strokeWeight(1);
+      noFill();
+      triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
     }
 
-    p5.pop();
+    pop();
   }
 
   takeDamage(amount) {
