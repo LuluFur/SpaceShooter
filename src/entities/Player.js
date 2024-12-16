@@ -193,8 +193,6 @@ class Player extends GameObject {
   }
 
   draw() {
-    
-    
     for (let proj of this.projectiles) {
       proj.draw();
     }
@@ -208,10 +206,10 @@ class Player extends GameObject {
       if (Math.floor(this.iFrames / 4) % 2 === 0) {
         stroke(255, 0, 0); // Red flash
       } else {
-        stroke(255); // Normal color
+        stroke(255, 255, 0); // Normal color
       }
     } else {
-      stroke(255); // Normal color
+      stroke(255, 255, 0); // Normal color
     }
     
     noFill();
