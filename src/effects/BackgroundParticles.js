@@ -11,6 +11,7 @@ class BackgroundParticle {
     this.xSpeed = random(-0.2, 0.2);
     this.ySpeed = random(-0.1, 0.15);
     this.opacity = 0.05;
+    this.range = 100;
   }
 
   // creation of a particle.
@@ -36,8 +37,8 @@ class BackgroundParticle {
 
     particles.forEach(element => {
       let dis = dist(this.x, this.y, element.x, element.y);
-      if (dis < 85) {
-        stroke('rgba(255,255,255,0.05)');
+      if (dis < this.range) {
+        stroke('rgba(255,255,255,'+0.05*1/range+')');
         line(this.x, this.y, element.x, element.y);
       }
     });
