@@ -5,7 +5,7 @@
 
 class Projectile extends GameObject {
   constructor(x, y, velocity, player) {
-    const p5 = getP5();
+    
     super(x, y, 5, velocity, 0);
     this.damage = 5;
     this.isDestroyed = false;
@@ -20,7 +20,7 @@ class Projectile extends GameObject {
   }
 
   calculateBounceNormal(asteroid) {
-    const p5 = getP5();
+    
     // Get the vector from asteroid center to projectile
     const normal = createVector(
       this.position.x - asteroid.position.x,
@@ -31,7 +31,7 @@ class Projectile extends GameObject {
   }
 
   bounce(normal) {
-    const p5 = getP5();
+    
     // r = d - 2(d·n)n where d is incident vector, n is normal vector
     const dot = this.velocity.dot(normal);
     const reflection = createVector(
@@ -45,7 +45,7 @@ class Projectile extends GameObject {
   }
 
   update() {
-    const p5 = getP5();
+    
     if (this.isDestroyed) {
       this.Destroy();
       return;
@@ -100,7 +100,7 @@ class Projectile extends GameObject {
   }
 
   draw() {
-    const p5 = getP5();
+    
     push();
     translate(this.position.x, this.position.y);
 
