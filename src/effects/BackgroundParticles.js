@@ -16,7 +16,7 @@ class BackgroundParticle {
 
     //blur effect
     drawingContext.shadowBlur = 10;
-    drawingContext.shadowColor = grayValue;
+    drawingContext.shadowColor = 255 * this.opacity;
     drawingContext.shadowOffsetX = 0;
     drawingContext.shadowOffsetY = 0;
     
