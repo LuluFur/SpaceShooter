@@ -5,9 +5,6 @@
 //import { Player } from '../entities/Player.js';
 
 function openDeathMenu() {
-  const p5 = getP5();
-  if (!p5) return;
-
   const deathMenu = document.createElement('div');
   deathMenu.className = 'death-menu';
   deathMenu.id = 'death-menu';
@@ -15,7 +12,7 @@ function openDeathMenu() {
   const content = document.createElement('div');
   content.className = 'death-content';
   
-  const timePlayed = Math.floor((p5.millis() - gameState.startTime) / 1000);
+  const timePlayed = Math.floor((millis() - gameState.startTime) / 1000);
   
   content.innerHTML = `
     <h1 class="death-title">Game Over</h1>
@@ -31,13 +28,10 @@ function openDeathMenu() {
   
   document.getElementById("gameCanvas").style.display = "none";
   document.getElementById("death-menu").style.display = "block";
-  p5.noLoop();
+  noLoop();
 }
 
 function closeDeathMenu() {
-  const p5 = getP5();
-  if (!p5) return;
-
   const deathMenu = document.getElementById('death-menu');
   if (deathMenu) {
     deathMenu.remove();
@@ -45,16 +39,13 @@ function closeDeathMenu() {
   
   document.getElementById("gameCanvas").style.display = "block";
   resetGame();
-  p5.loop();
+  loop();
 }
 
 function resetGame() {
-  const p5 = getP5();
-  if (!p5) return;
-
   // Reset game state
   gameState.score = 0;
-  gameState.startTime = p5.millis();
+  gameState.startTime = millis();
   gameState.difficulty = 1;
   gameState.skillLevelUp = 0;
   
@@ -66,10 +57,10 @@ function resetGame() {
   entities.textEffects = [];
   
   // Create new player
-  entities.player = new Player(p5.width / 2, p5.height / 2);
+  entities.player = new Player(width / 2, height / 2);
   
   // Spawn initial asteroids
-  spawnAsteroids(p5, 5);
+  spawnAsteroids(5);
   
   // Play start sound
   playSound('gameStartSound');
