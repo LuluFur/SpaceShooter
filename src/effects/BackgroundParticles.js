@@ -10,12 +10,13 @@ class BackgroundParticle {
     this.r = random(1, 8);
     this.xSpeed = random(-0.2, 0.2);
     this.ySpeed = random(-0.1, 0.15);
+    this.opacity = 0.05;
   }
 
   // creation of a particle.
   createParticle() {
     noStroke();
-    fill('rgba(200,169,169,0.1)');
+    fill('rgba(200,169,169,'+this.opacity+')');
     circle(this.x, this.y, this.r);
   }
 
@@ -36,7 +37,7 @@ class BackgroundParticle {
     particles.forEach(element => {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < 85) {
-        stroke('rgba(255,255,255,0.1)');
+        stroke('rgba(255,255,255,0.05)');
         line(this.x, this.y, element.x, element.y);
       }
     });
