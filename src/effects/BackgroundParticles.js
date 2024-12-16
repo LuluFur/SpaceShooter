@@ -16,9 +16,11 @@ class BackgroundParticle {
 
   // creation of a particle.
   createParticle() {
+    push();
     noStroke();
     fill('rgba(200,169,169,'+this.opacity+')');
     circle(this.x, this.y, this.r);
+    pop();
   }
 
   // setting the particle in motion.
@@ -38,8 +40,10 @@ class BackgroundParticle {
     particles.forEach(element => {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
+        push();
         stroke('rgba(255,255,255,'+map(dis, 0, this.range, 0, 0.05)+')');
         line(this.x, this.y, element.x, element.y);
+        pop();
       }
     });
   }
