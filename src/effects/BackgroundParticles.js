@@ -5,7 +5,6 @@ class BackgroundParticle {
     this.r = random(1, 8);
     this.xSpeed = random(-0.2, 0.2);
     this.ySpeed = random(-0.1, 0.15);
-    this.opacity = 0.1; // Low alpha value for subtle effect
     this.range = 100; // Maximum distance for visible lines
   }
 
@@ -30,14 +29,14 @@ class BackgroundParticle {
       if (dis < this.range) {
         push();
         //blur effect
-        drawingContext.shadowBlur = 20;
+        drawingContext.shadowBlur = 100;
         drawingContext.shadowColor = 'rgba(255, 255, 255, 0.5)';
         drawingContext.shadowOffsetX = 0;
         drawingContext.shadowOffsetY = 0;
         
         // Map the distance to grayscale intensity: closer -> brighter, farther -> darker
-        let grayValue = map(dis, 0, this.range, 150, 0);
-        grayValue = constrain(grayValue, 0, 150); // Ensure grayscale stays within bounds
+        let grayValue = map(dis, 0, this.range, 100, 0);
+        grayValue = constrain(grayValue, 0, 100); // Ensure grayscale stays within bounds
         stroke(grayValue); // Use the calculated grayscale value
         line(this.x, this.y, element.x, element.y);
 
