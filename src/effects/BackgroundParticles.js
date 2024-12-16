@@ -41,7 +41,7 @@ class BackgroundParticle {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
         push();
-        stroke('rgba(255,255,255,'+map(dis, 0, this.range, 0, 0.05)+')');
+        stroke('rgba(255,255,255,'+map(dis, 0, this.range, 0.1, 0)+')');
         line(this.x, this.y, element.x, element.y);
         pop();
       }
