@@ -17,7 +17,7 @@ class TextEffect {
     angleMax = 360,
     text = "Hello",
   }) {
-    const p5 = getP5();
+    
     this.x = x;
     this.y = y;
     this.text = text;
@@ -32,15 +32,15 @@ class TextEffect {
 
     // Convert degrees to radians using Math
     const angle = (Math.random() * (angleMax - angleMin) + angleMin) * Math.PI / 180;
-    const speed = p5.random(speedMin, speedMax);
+    const speed = random(speedMin, speedMax);
     
     // Create velocity vector using Math.cos and Math.sin
-    this.velocity = p5.createVector(Math.cos(angle) * speed, Math.sin(angle) * speed);
-    this.position = p5.createVector(x, y);
+    this.velocity = createVector(Math.cos(angle) * speed, Math.sin(angle) * speed);
+    this.position = createVector(x, y);
   }
 
   update() {
-    const p5 = getP5();
+    
     this.position.add(this.velocity);
     this.currentLife -= 1;
 
@@ -48,7 +48,7 @@ class TextEffect {
       return;
     }
 
-    this.size = p5.map(
+    this.size = map(
       this.currentLife,
       0,
       this.lifetime,
@@ -56,7 +56,7 @@ class TextEffect {
       this.textMaxSize
     );
 
-    this.alpha = p5.map(
+    this.alpha = map(
       this.currentLife,
       0,
       this.lifetime,
@@ -65,29 +65,29 @@ class TextEffect {
     );
 
     let progress = 1 - this.currentLife / this.lifetime;
-    this.color = p5.lerpColor(
-      p5.color(this.textColor1),
-      p5.color(this.textColor2),
+    this.color = lerpColor(
+      color(this.textColor1),
+      color(this.textColor2),
       progress
     );
   }
 
   draw() {
-    const p5 = getP5();
+    
     if (this.currentLife <= 0) return;
 
-    p5.push();
-    p5.noStroke();
-    p5.fill(
-      p5.red(this.color),
-      p5.green(this.color),
-      p5.blue(this.color),
+    push();
+    noStroke();
+    fill(
+      red(this.color),
+      green(this.color),
+      blue(this.color),
       this.alpha
     );
-    p5.textSize(this.size);
-    p5.textAlign(p5.CENTER, p5.CENTER);
-    p5.text(this.text, this.position.x, this.position.y);
-    p5.pop();
+    textSize(this.size);
+    textAlign(CENTER, CENTER);
+    text(this.text, this.position.x, this.position.y);
+    pop();
   }
 
   isFinished() {
