@@ -7,7 +7,7 @@
 class BossAlien extends MiniBossAlien {
   constructor(x, y) {
     super(x, y);
-    const p5 = getP5();
+    
     
     // Double the size of mini boss
     this.size = 80;
@@ -46,12 +46,12 @@ class BossAlien extends MiniBossAlien {
   }
 
   update() {
-    const p5 = getP5();
+    
     
     // Update mode
-    if (p5.millis() - this.modeChangeTimer > this.modeChangeDuration) {
+    if (millis() - this.modeChangeTimer > this.modeChangeDuration) {
       this.shootingMode = this.shootingMode === 'heavy' ? 'rapid' : 'heavy';
-      this.modeChangeTimer = p5.millis();
+      this.modeChangeTimer = millis();
       this.currentBurst = 0;
       this.burstTimer = 0;
     }
@@ -66,22 +66,22 @@ class BossAlien extends MiniBossAlien {
   }
 
   shoot() {
-    const p5 = getP5();
+    
     if (!entities.player) return;
     
     // Check if it's time for a new burst
-    if (this.currentBurst === 0 && p5.millis() - this.lastShotTime >= this.shootDelay) {
+    if (this.currentBurst === 0 && millis() - this.lastShotTime >= this.shootDelay) {
       this.startBurst();
     }
     
     // Check if it's time for the next shot in the burst
-    if (this.currentBurst > 0 && p5.millis() - this.burstTimer >= this.burstDelay) {
+    if (this.currentBurst > 0 && millis() - this.burstTimer >= this.burstDelay) {
       this.fireBullet();
       this.currentBurst--;
-      this.burstTimer = p5.millis();
+      this.burstTimer = millis();
       
       if (this.currentBurst === 0) {
-        this.lastShotTime = p5.millis();
+        this.lastShotTime = millis();
       }
     }
   }
@@ -92,27 +92,27 @@ class BossAlien extends MiniBossAlien {
   }
 
   fireBullet() {
-    const p5 = getP5();
+    
     if (!entities.player) return;
 
-    const angleToPlayer = p5.atan2(
+    const angleToPlayer = atan2(
       entities.player.position.y - this.position.y,
       entities.player.position.x - this.position.x
     );
 
     // Less inaccuracy for heavy shots
     const inaccuracy = this.shootingMode === 'heavy' ? 0.1 : 0.2;
-    const finalAngle = angleToPlayer + p5.random(-inaccuracy, inaccuracy);
+    const finalAngle = angleToPlayer + random(-inaccuracy, inaccuracy);
 
     const speed = this.shootingMode === 'heavy' ? this.heavySpeed : this.rapidSpeed;
-    const velocity = p5.createVector(
-      p5.cos(finalAngle),
-      p5.sin(finalAngle)
+    const velocity = createVector(
+      cos(finalAngle),
+      sin(finalAngle)
     ).mult(speed);
 
     const projectile = new Projectile(
-      this.position.x + p5.cos(finalAngle) * 40,
-      this.position.y + p5.sin(finalAngle) * 40,
+      this.position.x + cos(finalAngle) * 40,
+      this.position.y + sin(finalAngle) * 40,
       velocity,
       this
     );
@@ -131,16 +131,16 @@ class BossAlien extends MiniBossAlien {
   }
 
   draw() {
-    const p5 = getP5();
+    
     
     // Draw projectiles
     for (let proj of this.projectiles) {
       proj.draw();
     }
     
-    p5.push();
-    p5.translate(this.position.x, this.position.y);
-    p5.rotate(p5.radians(this.direction) + p5.HALF_PI);
+    push();
+    translate(this.position.x, this.position.y);
+    rotate(radians(this.direction) + HALF_PI);
 
     // Pulsing glow effect
     this.glowIntensity += 0.05 * this.glowDirection;
@@ -153,46 +153,46 @@ class BossAlien extends MiniBossAlien {
       'rgba(255, 150, 0, 0.5)';
 
     // Enhanced glow effect
-    p5.drawingContext.shadowBlur = 30 + (this.glowIntensity * 15);
-    p5.drawingContext.shadowColor = glowColor;
+    drawingContext.shadowBlur = 30 + (this.glowIntensity * 15);
+    drawingContext.shadowColor = glowColor;
 
     // Draw boss ship
-    p5.stroke(this.shootingMode === 'heavy' ? 255 : 255, 
+    stroke(this.shootingMode === 'heavy' ? 255 : 255, 
               this.shootingMode === 'heavy' ? 0 : 150, 
               0);
-    p5.strokeWeight(4);
-    p5.noFill();
+    strokeWeight(4);
+    noFill();
     
     // Complex ship design
-    p5.beginShape();
-    p5.vertex(0, -this.size);
-    p5.vertex(-this.size/2, -this.size/2);
-    p5.vertex(-this.size/1.5, 0);
-    p5.vertex(-this.size/2, this.size/2);
-    p5.vertex(0, this.size/3);
-    p5.vertex(this.size/2, this.size/2);
-    p5.vertex(this.size/1.5, 0);
-    p5.vertex(this.size/2, -this.size/2);
-    p5.endShape(p5.CLOSE);
+    beginShape();
+    vertex(0, -this.size);
+    vertex(-this.size/2, -this.size/2);
+    vertex(-this.size/1.5, 0);
+    vertex(-this.size/2, this.size/2);
+    vertex(0, this.size/3);
+    vertex(this.size/2, this.size/2);
+    vertex(this.size/1.5, 0);
+    vertex(this.size/2, -this.size/2);
+    endShape(CLOSE);
 
     // Additional details
-    p5.line(-this.size/3, -this.size/2, this.size/3, -this.size/2);
-    p5.line(-this.size/2, 0, this.size/2, 0);
-    p5.line(-this.size/3, this.size/3, this.size/3, this.size/3);
+    line(-this.size/3, -this.size/2, this.size/3, -this.size/2);
+    line(-this.size/2, 0, this.size/2, 0);
+    line(-this.size/3, this.size/3, this.size/3, this.size/3);
 
     // Mode indicator
     const indicatorSize = this.size/6;
     if (this.shootingMode === 'heavy') {
-      p5.circle(0, 0, indicatorSize * 2);
+      circle(0, 0, indicatorSize * 2);
     } else {
       const spacing = indicatorSize/2;
-      p5.circle(-spacing, 0, indicatorSize);
-      p5.circle(0, 0, indicatorSize);
-      p5.circle(spacing, 0, indicatorSize);
+      circle(-spacing, 0, indicatorSize);
+      circle(0, 0, indicatorSize);
+      circle(spacing, 0, indicatorSize);
     }
 
-    p5.drawingContext.shadowBlur = 0;
-    p5.pop();
+    drawingContext.shadowBlur = 0;
+    pop();
 
     // Draw health bar
     this.drawHealthBar();
