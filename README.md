@@ -5,9 +5,9 @@ A 2D space shooter game built using **p5.js** and modern JavaScript. The player 
 ---
 
 ## 🎮 Features
-- **Player Movement**: Smooth controls for movement.
+- **Player Movement**: Smooth right-click movement controls.
 - **Asteroids**: Randomly spawn obstacles with collision detection.
-- **Shooting Mechanics**: Shoot projectiles to destroy asteroids and enemies.
+- **Shooting Mechanics**: Shoot projectiles by left-clicking to destroy asteroids and enemies.
 - **XP and Leveling**: Collect XP orbs and level up to unlock skills.
 - **Skill Menu**: Upgrade abilities like shooting, speed, or health.
 - **Sound Effects**: Dynamic sounds for explosions, shooting, and other actions.
