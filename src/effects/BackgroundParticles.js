@@ -38,7 +38,7 @@ class BackgroundParticle {
     particles.forEach(element => {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < this.range) {
-        stroke('rgba(255,255,255,'+0.05*1/range+')');
+        stroke('rgba(255,255,255,'+0.05*1/this.range+')');
         line(this.x, this.y, element.x, element.y);
       }
     });
