@@ -153,7 +153,6 @@ function selectSkill(skillId) {
 }
 
 function openSkillMenu() {
-  const p5 = getP5();
 
   if (gameState.skillsToChoose.length === 0) return;
 
@@ -162,15 +161,14 @@ function openSkillMenu() {
   document.getElementById("skill-menu").style.display = "block";
   document.getElementById("gameCanvas").style.display = "none";
   gameState.skillMenuOpen = true;
-  p5.noLoop();
+  noLoop();
 }
 
 function closeSkillMenu() {
-  const p5 = getP5();
   gameState.skillMenuOpen = false;
   document.getElementById("skill-menu").style.display = "none";
   document.getElementById("gameCanvas").style.display = "block";
-  p5.loop();
+  loop();
 }
 
 function renderSkills(skillIds) {
