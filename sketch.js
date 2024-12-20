@@ -1,8 +1,13 @@
 // Matter.js setup
 const { Engine, World, Bodies, Composite } = Matter;
 
-// Set poly-decomp as the decomposition library
-Matter.Common.setDecomp(decomp);
+// Initialize Matter.js with poly-decomp
+if (typeof decomp !== "undefined") {
+  Matter.Common.setDecomp(decomp);
+} else {
+  console.error("poly-decomp is not defined. Ensure the library is loaded correctly.");
+}
+
 
 // Initialize Matter.js engine and world
 const engine = Engine.create();
