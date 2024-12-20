@@ -1,3 +1,6 @@
+// Set poly-decomp as the decomposition library
+Matter.Common.setDecomp(decomp);
+
 // Matter.js setup
 const { Engine, World, Bodies, Composite } = Matter;
 
