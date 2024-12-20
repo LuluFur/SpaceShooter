@@ -1,27 +1,9 @@
-// import p5 from 'p5';
-// import { initializeP5, getP5 } from './game/p5Instance.js';
-// import { Player } from './entities/Player.js';
-// import { gameState, entities } from './game/GameState.js';
-// import {
-//  loadSounds,
-//  playSound,
-//  initializeSoundVolumes,
-//} from './game/SoundManager.js';
-//import {
-//  updateAsteroidSpawning,
-//  spawnAsteroids,
-//} from './game/AsteroidSpawning.js';
-//import { spawnAlien } from './game/AlienSpawning.js';
-//import { updateEffects } from './effects/EffectManager.js';
-//import { openSkillMenu, closeSkillMenu } from './skills/SkillMenu.js';
-//import { createBulletImpactDebris } from './effects/EffectManager.js';
-//import { openDeathMenu } from './game/DeathMenu.js';
-//import { spawnXPOrbs } from './game/XPSpawner.js';
-//import {
-//  spawnBackgroundParticles,
-//  drawBackgroundParticles,
-//} from './effects/BackgroundParticles.js';
-//import { MiniBossAlien } from './entities/MiniBossAlien.js';
+// Matter.js setup
+const { Engine, World, Bodies, Composite } = Matter;
+
+// Initialize Matter.js engine and world
+const engine = Engine.create();
+const world = engine.world;
 
 // Prevent right-click context menu globally
 document.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -171,6 +153,19 @@ function draw() {
     orb.draw();
     if (orb.collected) {
       entities.xpOrbs.splice(i, 1);
+    }
+  }
+
+  // Update and draw all objects
+  for (const obj of gameObjects) {
+    obj.update();
+    obj.draw();
+
+    // Handle collisions based on object type
+    if (obj instanceof Projectile) {
+        handleProjectileAsteroidCollisions(obj, gameObjects);
+        handleProjectilePlayerCollisions(obj, entities.player);
+        handleProjectileAlienCollisions(obj, gameObjects);
     }
   }
 

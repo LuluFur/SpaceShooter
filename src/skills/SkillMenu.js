@@ -155,7 +155,7 @@ function selectSkill(skillId) {
 function openSkillMenu() {
 
   if (gameState.skillsToChoose.length === 0) return;
-
+  console.log("leveled up");
   const selectedSkills = getRandomSkills(3);
   renderSkills(selectedSkills);
   document.getElementById("skill-menu").style.display = "block";

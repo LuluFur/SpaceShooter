@@ -1,20 +1,19 @@
-//import { GameObject } from './GameObject.js';
-//import { getP5 } from '../game/p5Instance.js';
-//import { Projectile } from './Projectile.js';
-//import { ParticleEffect } from '../effects/ParticleEffect.js';
-//import { playSound } from '../game/SoundManager.js';
-//import { createHealEffect } from '../effects/EffectManager.js';
-
 class Player extends GameObject {
   constructor(x, y) {
-    super(x, y, 20, createVector(0, 0), 0);
-    
+    const collisionVertices = Player.generateCollisionVertices(x, y, 20);
+    const drawVertices = Player.generateDrawVertices(20);
+
+    super(x, y, drawVertices, collisionVertices, {
+      restitution: 0.5,
+      friction: 0.05,
+    });
+
     // Combat properties
     this.shootDelay = 500;
     this.lastShotTime = 0;
     this.projectiles = [];
     this.iFrames = 0;
-    
+
     // Bullet properties
     this.bulletCount = 1;
     this.bulletDamage = 5;
@@ -22,7 +21,7 @@ class Player extends GameObject {
     this.fireRate = 1;
     this.bulletSpeed = 1;
     this.bulletBounces = 0;
-    
+
     // Defense properties
     this.shieldEnabled = false;
     this.shieldHits = 2;
@@ -39,20 +38,40 @@ class Player extends GameObject {
     this.xpCollectionRange = 300;
   }
 
+  static generateCollisionVertices(x, y, size) {
+    const vertices = [];
+    for (let i = 0; i < 3; i++) {
+      const angle = i * (TWO_PI / 3) - HALF_PI;
+      vertices.push({
+        x: x + size * Math.cos(angle),
+        y: y + size * Math.sin(angle),
+      });
+    }
+    return vertices;
+  }
+
+  static generateDrawVertices(size) {
+    return [
+      { x: 0, y: -size },
+      { x: -size / 2, y: size },
+      { x: size / 2, y: size },
+    ];
+  }
+
   heal(amount) {
     const oldHealth = this.health;
     this.health = Math.min(this.health + amount, this.maxHealth);
     const healedAmount = this.health - oldHealth;
-    
+
     if (healedAmount > 0) {
-      createHealEffect(this.position, Math.ceil(healedAmount));
+      createHealEffect(this.body.position, Math.ceil(healedAmount));
     }
   }
 
   addXP(amount) {
     const adjustedAmount = amount * this.xpMultiplier;
     this.xp += adjustedAmount;
-    
+
     while (this.xp >= this.xpToNextLevel) {
       this.levelUp();
     }
@@ -71,8 +90,8 @@ class Player extends GameObject {
 
   applyDamage(damage) {
     if (this.iFrames > 0) return;
-    
-    let reducedDamage = damage * (1 - this.damageReduction);
+
+    const reducedDamage = damage * (1 - this.damageReduction);
     this.health -= reducedDamage;
     this.health = Math.max(this.health, 0);
     this.iFrames = 60;
@@ -82,44 +101,20 @@ class Player extends GameObject {
     return (this.health / this.maxHealth) * 100;
   }
 
-  generateVertices() {
-    
-    this.shieldSeed = Math.floor((frameCount / 15) % 4) + 1;
-
-    let vertices = [];
-    let totalVertices = 8;
-    let noiseStrength = 3;
-
-    for (let i = 0; i < totalVertices; i++) {
-      let angle = TWO_PI / totalVertices * i;
-      let radius = this.size + noise(i * noiseStrength, this.shieldSeed) * this.size * 0.5;
-      vertices.push(createVector(cos(angle) * radius, sin(angle) * radius));
-    }
-    return vertices;
-  }
-
-  drawShieldEffect() {
-    
-    beginShape();
-    for (let v of this.generateVertices()) {
-      vertex(v.x * (this.size / 15), v.y * (this.size / 15));
-    }
-    endShape(CLOSE);
-  }
-
   move() {
-    
-    let mouseVector = createVector(mouseX, mouseY);
-    let directionToMouse = mouseVector.sub(this.position).heading();
-    this.direction = degrees(directionToMouse);
+    const targetPosition = Matter.Vector.create(mouseX, mouseY);
+    const directionToMouse = Matter.Vector.angle(targetPosition, this.body.position);
 
     if (mouseIsPressed && mouseButton === RIGHT) {
-      let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
-      this.velocity.add(force);
-      
+      const force = Matter.Vector.create(
+        Math.cos(directionToMouse),
+        Math.sin(directionToMouse)
+      );
+      Matter.Body.applyForce(this.body, this.body.position, force);
+
       new ParticleEffect({
-        x: this.position.x - cos(directionToMouse) * 15,
-        y: this.position.y - sin(directionToMouse) * 15,
+        x: this.body.position.x - Math.cos(directionToMouse) * 15,
+        y: this.body.position.y - Math.sin(directionToMouse) * 15,
         numParticles: 3,
         sizeMin: 6,
         sizeMax: 4,
@@ -133,61 +128,59 @@ class Player extends GameObject {
         angleMin: degrees(directionToMouse) + 180 - 35,
         angleMax: degrees(directionToMouse) + 180 + 35,
       });
-    } else {
-      this.velocity.mult(0.98);
     }
 
-    this.velocity.limit(3);
-    this.position.add(this.velocity);
+    // Limit speed
+    const speed = Math.min(Matter.Vector.magnitude(this.body.velocity), this.speed);
+    Matter.Body.setVelocity(
+      this.body,
+      Matter.Vector.mult(Matter.Vector.normalise(this.body.velocity), speed)
+    );
   }
 
   update() {
-    
-    if (mouseIsPressed && mouseButton === LEFT) {
-      this.shoot();
-    }
-    
     this.move();
-    
+
+    // Reduce iFrames
     if (this.iFrames > 0) this.iFrames--;
 
-    for (let proj of this.projectiles) {
-      proj.update();
+    // Update projectiles
+    this.projectiles.forEach((proj) => proj.update());
+
+    // Fire bullets
+    if (mouseIsPressed && mouseButton === LEFT) {
+      this.shoot();
     }
   }
 
   shoot() {
-    
     if (millis() - this.lastShotTime >= this.shootDelay / this.fireRate) {
-      let directionToMouse = atan2(mouseY - this.position.y, mouseX - this.position.x);
-      let spread = 10;
+      const angle = Math.atan2(
+        mouseY - this.body.position.y,
+        mouseX - this.body.position.x
+      );
+      const spread = 10;
 
-      let angles = [];
-      if (this.bulletCount % 2 === 1) {
-        angles.push(directionToMouse);
-        for (let i = 1; i <= Math.floor(this.bulletCount / 2); i++) {
-          let offset = radians(i * spread);
-          angles.push(directionToMouse - offset, directionToMouse + offset);
-        }
-      } else {
-        for (let i = 1; i <= this.bulletCount / 2; i++) {
-          let offset = radians(i * spread - spread * 0.5);
-          angles.push(directionToMouse - offset, directionToMouse + offset);
-        }
-      }
+      // Generate bullet angles based on bullet count
+      const angles = [...Array(this.bulletCount).keys()].map(
+        (i) => angle + radians(i * spread - spread * (this.bulletCount - 1) / 2)
+      );
 
-      angles.forEach(angle => {
-        let velocity = createVector(cos(angle), sin(angle)).mult(5 * this.bulletSpeed);
-        let px = this.position.x + cos(directionToMouse) * 15;
-        let py = this.position.y + sin(directionToMouse) * 15;
-        let newProjectile = new Projectile(px, py, velocity, this);
-        newProjectile.size = this.bulletSize;
-        newProjectile.damage = this.bulletDamage;
-        newProjectile.bouncesRemaining = this.bulletBounces;
-        this.projectiles.push(newProjectile);
+      // Create projectiles
+      angles.forEach((a) => {
+        const velocity = Matter.Vector.create(Math.cos(a), Math.sin(a));
+        const projectile = new Projectile(
+          this.body.position.x,
+          this.body.position.y,
+          Matter.Vector.mult(velocity, this.bulletSpeed),
+          this
+        );
+        projectile.size = this.bulletSize;
+        projectile.damage = this.bulletDamage;
+        projectile.bouncesRemaining = this.bulletBounces;
+        this.projectiles.push(projectile);
       });
 
-      //playSound('shootSound');
       this.lastShotTime = millis();
     }
   }
@@ -196,10 +189,10 @@ class Player extends GameObject {
     for (let proj of this.projectiles) {
       proj.draw();
     }
-    
+
     push();
-    translate(this.position.x, this.position.y);
-    
+    translate(this.body.position.x, this.body.position.y);
+
     // Flash effect during iFrames
     if (this.iFrames > 0) {
       // Flash every 4 frames
@@ -211,10 +204,10 @@ class Player extends GameObject {
     } else {
       stroke(255, 255, 0); // Normal color
     }
-    
+
     noFill();
     strokeWeight(2);
-    
+
     if (this.shieldEnabled) {
       stroke(0, 100, 255);
       this.drawShieldEffect();
@@ -224,7 +217,7 @@ class Player extends GameObject {
         stroke(255);
       }
     }
-    
+
     rotate(radians(this.direction) + HALF_PI);
 
     drawingContext.shadowBlur = 20;
@@ -232,8 +225,8 @@ class Player extends GameObject {
     drawingContext.shadowOffsetX = 0;
     drawingContext.shadowOffsetY = 0;
 
-    triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
-    
+    triangle(0, -20, -10, 20, 10, 20);
+
     drawingContext.shadowBlur = 0;
     pop();
   }

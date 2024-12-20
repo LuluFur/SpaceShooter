@@ -1,7 +1,3 @@
-//import { entities } from '../game/GameState.js';
-//import { ParticleEffect } from './ParticleEffect.js';
-//import { TextEffect } from './TextEffect.js';
-
 function updateEffects() {
   updateParticleEffects();
   updateTextEffects();
@@ -48,8 +44,8 @@ function createExplosionEffect(position) {
   );
 }
 
+// Create healing particles
 function createHealEffect(position, amount) {
-  // Create healing particles
   entities.particleEffects.push(
     new ParticleEffect({
       x: position.x,
@@ -112,7 +108,7 @@ function createBulletImpactDebris({ position, direction, spreadAngle = 120 }) {
   );
 }
 
-function createHitTextEffect(p5Instance, position, text) {
+function createHitTextEffect(position, text) {
   entities.textEffects.push(
     new TextEffect({
       x: position.x,
