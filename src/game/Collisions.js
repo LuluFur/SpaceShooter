@@ -73,8 +73,18 @@ function handleProjectileAlienCollisions(projectile, gameObjects) {
 // Check and handle collisions between asteroids and the player
 function handleAsteroidPlayerCollisions(asteroids, player) {
     for (const asteroid of asteroids) {
-        if (asteroid.checkPlayerCollision(player)) {
-            asteroid.isDestroyed = true;
+        const collision = Matter.SAT.collides(asteroid.body, player.body);
+        if (collision.collided) {
+            player.applyDamage(asteroid.damage);
+            const repulsionForce = Matter.Vector.normalise(
+                Matter.Vector.sub(asteroid.body.position, player.body.position)
+            );
+            Matter.Body.applyForce(asteroid.body, asteroid.body.position, Matter.Vector.mult(repulsionForce, 0.05));
+            asteroid.health -= asteroid.health * 0.3;
+            if (asteroid.health <= 0) {
+                asteroid.isDestroyed = true;
+                player.heal(10);
+            }
         }
     }
 }
@@ -83,19 +93,20 @@ function handleAsteroidPlayerCollisions(asteroids, player) {
 function handleAsteroidProjectileCollisions(asteroids, projectiles) {
     for (const asteroid of asteroids) {
         for (const projectile of projectiles) {
-            if (asteroid.checkProjectileCollision(projectile)) {
-                asteroid.isDestroyed = true;
-                break; // A single projectile can only destroy one asteroid
+            const collision = Matter.SAT.collides(asteroid.body, projectile.body);
+            if (collision.collided) {
+                asteroid.health -= projectile.damage;
+                const impactForce = Matter.Vector.normalise(
+                    Matter.Vector.sub(asteroid.body.position, projectile.body.position)
+                );
+                Matter.Body.applyForce(asteroid.body, asteroid.body.position, Matter.Vector.mult(impactForce, 0.1));
+                projectile.destroy();
+                if (asteroid.health <= 0) {
+                    asteroid.isDestroyed = true;
+                }
+                break; // A single projectile can only hit one asteroid
             }
         }
     }
 }
 
-// Check and handle repulsion between asteroids
-function handleAsteroidRepulsions(asteroids) {
-    for (let i = 0; i < asteroids.length; i++) {
-        for (let j = i + 1; j < asteroids.length; j++) {
-            asteroids[i].applyRepulsion(asteroids[j]);
-        }
-    }
-}
