@@ -1,20 +1,19 @@
 // Matter.js setup
 const { Engine, World, Bodies, Composite } = Matter;
 
-// Initialize Matter.js with poly-decomp
+// Set poly-decomp as the decomposition library
 if (typeof decomp !== "undefined") {
   Matter.Common.setDecomp(decomp);
 } else {
-  console.error("poly-decomp is not defined. Ensure the library is loaded correctly.");
+  console.error("poly-decomp library is missing. Make sure it's included in your HTML.");
 }
-
 
 // Initialize Matter.js engine and world
 const engine = Engine.create();
 const world = engine.world;
 
 // Prevent right-click context menu globally
-document.addEventListener('contextmenu', (e) => e.preventDefault());
+document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 let alienSpawnTimer = 0;
 const alienSpawnDelay = 30000; // Spawn alien every 30 seconds
@@ -24,13 +23,13 @@ let lastPlayerLevel = 1;
 let backgroundParticles = [];
 
 function preload() {
-  //initializeP5(p);
-};
+  // Initialize any resources if needed
+}
 
 function setup() {
   const canvas = createCanvas(1080, 720);
-  canvas.parent('main');
-  canvas.id('gameCanvas');
+  canvas.parent("main");
+  canvas.id("gameCanvas");
 
   entities.player = new Player(width / 2, height / 2);
   entities.asteroids = [];
@@ -124,17 +123,14 @@ function draw() {
   // Draw background particles
   drawBackgroundParticles(backgroundParticles);
 
-  // Check alien spawn timer
+  // Alien spawn logic
   if (millis() - alienSpawnTimer > alienSpawnDelay) {
     spawnAlien(false); // Regular alien spawn
     alienSpawnTimer = millis();
   }
 
-  // Check mini boss spawn timer
-  if (
-    gameState.difficulty >= 2 &&
-    millis() - miniBossSpawnTimer > miniBossSpawnDelay
-  ) {
+  // Mini boss spawn logic
+  if (gameState.difficulty >= 2 && millis() - miniBossSpawnTimer > miniBossSpawnDelay) {
     spawnAlien(true); // Force mini boss spawn
     miniBossSpawnTimer = millis();
   }
@@ -149,10 +145,8 @@ function draw() {
 
   let timePlayed = floor((millis() - gameState.startTime) / 1000);
 
-  document.getElementById('score').innerText = `Score: ${gameState.score}`;
-  document.getElementById('time-played').innerText = `Time: ${formatTime(
-    timePlayed
-  )}`;
+  document.getElementById("score").innerText = `Score: ${gameState.score}`;
+  document.getElementById("time-played").innerText = `Time: ${formatTime(timePlayed)}`;
 
   // Update and draw XP orbs
   for (let i = entities.xpOrbs.length - 1; i >= 0; i--) {
@@ -164,7 +158,16 @@ function draw() {
     }
   }
 
-  // Update and draw all objects
+  // Handle asteroid-player collisions
+  handleAsteroidPlayerCollisions(entities.asteroids, entities.player);
+
+  // Handle asteroid-projectile collisions
+  handleAsteroidProjectileCollisions(entities.asteroids, entities.player.projectiles);
+
+  // Handle asteroid repulsions
+  handleAsteroidRepulsions(entities.asteroids);
+
+  // Update and draw all GameObjects
   for (const obj of gameObjects) {
     obj.update();
     obj.draw();
@@ -177,122 +180,11 @@ function draw() {
     }
   }
 
-  // Update and draw asteroids
-  for (let i = entities.asteroids.length - 1; i >= 0; i--) {
-    const asteroid = entities.asteroids[i];
-    asteroid.update();
-    asteroid.draw();
+  // Remove destroyed asteroids
+  entities.asteroids = entities.asteroids.filter((asteroid) => !asteroid.isDestroyed);
 
-    if (asteroid.checkPlayerCollision(entities.player)) {
-      entities.asteroids.splice(i, 1);
-      continue;
-    }
-
-    for (let j = entities.player.projectiles.length - 1; j >= 0; j--) {
-      const projectile = entities.player.projectiles[j];
-      if (asteroid.checkProjectileCollision(projectile)) {
-        if (asteroid.health <= 0) {
-          if (asteroid.isGold) {
-            gameState.score += 100;
-            spawnXPOrbs(asteroid.position.x, asteroid.position.y, 20);
-          } else {
-            gameState.score += 10;
-            spawnXPOrbs(asteroid.position.x, asteroid.position.y, 5);
-          }
-          entities.asteroids.splice(i, 1);
-        }
-        break;
-      }
-    }
-
-    for (let j = i + 1; j < entities.asteroids.length; j++) {
-      asteroid.applyRepulsion(entities.asteroids[j]);
-    }
-  }
-
-  // Update and draw aliens
-  for (let i = entities.aliens.length - 1; i >= 0; i--) {
-    const alien = entities.aliens[i];
-    alien.update();
-    alien.draw();
-
-    // Check alien projectiles collision with player
-    for (let j = alien.projectiles.length - 1; j >= 0; j--) {
-      const projectile = alien.projectiles[j];
-      const distance = dist(
-        entities.player.position.x,
-        entities.player.position.y,
-        projectile.position.x,
-        projectile.position.y
-      );
-
-      if (distance < entities.player.size + projectile.size) {
-        entities.player.applyDamage(projectile.damage);
-        projectile.isDestroyed = true;
-
-        if (entities.player.health <= 0) {
-          openDeathMenu();
-        }
-
-        // Calculate impact direction
-        const relativeVelocity = createVector(
-          projectile.velocity.x - entities.player.velocity.x,
-          projectile.velocity.y - entities.player.velocity.y
-        );
-        const impactDirection = degrees(relativeVelocity.heading());
-
-        // Create impact effect
-        createBulletImpactDebris({
-          position: projectile.position,
-          direction: impactDirection,
-          spreadAngle: 120,
-        });
-
-        break;
-      }
-    }
-
-    // Check player projectiles collision with alien
-    for (let j = entities.player.projectiles.length - 1; j >= 0; j--) {
-      const projectile = entities.player.projectiles[j];
-      const distance = dist(
-        alien.position.x,
-        alien.position.y,
-        projectile.position.x,
-        projectile.position.y
-      );
-
-      if (distance < alien.size + projectile.size) {
-        if (alien.takeDamage(projectile.damage)) {
-          entities.aliens.splice(i, 1);
-
-          // Check if the destroyed alien was a mini boss
-          if (alien instanceof MiniBossAlien) {
-            gameState.score += 1000;
-            spawnXPOrbs(alien.position.x, alien.position.y, 300); // 10x normal alien XP
-          } else {
-            gameState.score += 200;
-            spawnXPOrbs(alien.position.x, alien.position.y, 30);
-          }
-        }
-
-        const relativeVelocity = createVector(
-          projectile.velocity.x - alien.velocity.x,
-          projectile.velocity.y - alien.velocity.y
-        );
-        const impactDirection = degrees(relativeVelocity.heading());
-
-        createBulletImpactDebris({
-          position: projectile.position,
-          direction: impactDirection,
-          spreadAngle: 120,
-        });
-
-        projectile.isDestroyed = true;
-        break;
-      }
-    }
-  }
+  // Remove destroyed projectiles
+  entities.player.projectiles = entities.player.projectiles.filter((projectile) => !projectile.isDestroyed);
 
   // Update effects
   updateEffects();
@@ -302,4 +194,4 @@ function draw() {
     entities.player.draw();
     drawStatusBars();
   }
-};
+}
