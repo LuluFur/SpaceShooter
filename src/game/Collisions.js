@@ -69,3 +69,33 @@ function handleProjectileAlienCollisions(projectile, gameObjects) {
         }
     }
 }
+
+// Check and handle collisions between asteroids and the player
+function handleAsteroidPlayerCollisions(asteroids, player) {
+    for (const asteroid of asteroids) {
+        if (asteroid.checkPlayerCollision(player)) {
+            asteroid.isDestroyed = true;
+        }
+    }
+}
+
+// Check and handle collisions between asteroids and projectiles
+function handleAsteroidProjectileCollisions(asteroids, projectiles) {
+    for (const asteroid of asteroids) {
+        for (const projectile of projectiles) {
+            if (asteroid.checkProjectileCollision(projectile)) {
+                asteroid.isDestroyed = true;
+                break; // A single projectile can only destroy one asteroid
+            }
+        }
+    }
+}
+
+// Check and handle repulsion between asteroids
+function handleAsteroidRepulsions(asteroids) {
+    for (let i = 0; i < asteroids.length; i++) {
+        for (let j = i + 1; j < asteroids.length; j++) {
+            asteroids[i].applyRepulsion(asteroids[j]);
+        }
+    }
+}
