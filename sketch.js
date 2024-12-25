@@ -5,13 +5,17 @@ const { Engine, World, Bodies, Composite } = Matter;
 if (typeof decomp !== "undefined") {
   Matter.Common.setDecomp(decomp);
 } else {
-  console.error("poly-decomp library is missing. Make sure it's included in your HTML."); // errors here!!!
+  console.error("poly-decomp library is missing. Make sure it's included in your HTML."); // fixed
   console.log('decomp:', window.decomp);
 }
 
 // Initialize Matter.js engine and world
 const engine = Engine.create();
 const world = engine.world;
+
+// Disable gravity
+engine.world.gravity.y = 0; 
+engine.world.gravity.x = 0; // Optional, depending on your requirements
 
 // Prevent right-click context menu globally
 document.addEventListener("contextmenu", (e) => e.preventDefault());
