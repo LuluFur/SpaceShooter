@@ -89,10 +89,10 @@ class Player extends GameObject {
     angularDifference = Math.atan2(Math.sin(angularDifference), Math.cos(angularDifference)); // Normalize to [-PI, PI]
 
     // Define a proportional gain to control rotational speed
-    const rotationalForce = 0.05; // Adjust for smoother or faster rotation
+    const rotationalForce = 0.1; // Adjust for smoother or faster rotation
 
-    // Apply torque proportional to the angular difference
-    Matter.Body.applyTorque(this.body, angularDifference * rotationalForce);
+    // Set the angular velocity proportional to the angular difference
+    Matter.Body.setAngularVelocity(this.body, angularDifference * rotationalForce);
   
     if (mouseIsPressed && mouseButton === RIGHT) {
       let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
