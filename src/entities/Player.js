@@ -220,7 +220,7 @@ class Player extends GameObject {
       }
     }
 
-    rotate(radians(this.direction) + HALF_PI);
+    rotate(this.direction + 90);
 
     drawingContext.shadowBlur = 20;
     drawingContext.shadowColor = 'rgba(255, 255, 255, 0.5)';

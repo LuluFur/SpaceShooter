@@ -203,4 +203,7 @@ function draw() {
   if (entities.player) {
     drawStatusBars();
   }
+
+  // Update Matter.js physics engine
+  Matter.Engine.update(engine);
 }
