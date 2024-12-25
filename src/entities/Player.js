@@ -80,7 +80,19 @@ class Player extends GameObject {
   move() {
     let targetPosition = createVector(mouseX, mouseY);
     let directionToMouse = targetPosition.sub(this.body.position).heading();
-    this.direction = directionToMouse;
+
+    // Calculate the current angle of the body
+    let currentAngle = this.body.angle;
+
+    // Calculate the shortest angular difference
+    let angularDifference = directionToMouse - currentAngle;
+    angularDifference = Math.atan2(Math.sin(angularDifference), Math.cos(angularDifference)); // Normalize to [-PI, PI]
+
+    // Define a proportional gain to control rotational speed
+    const rotationalForce = 0.05; // Adjust for smoother or faster rotation
+
+    // Apply torque proportional to the angular difference
+    Matter.Body.applyTorque(this.body, angularDifference * rotationalForce);
   
     if (mouseIsPressed && mouseButton === RIGHT) {
       let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
