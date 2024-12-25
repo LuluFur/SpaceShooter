@@ -159,11 +159,18 @@ function draw() {
     }
   }
 
-  // Update and draw all GameObjects
-  for (const objType of entities) {
-    for (const obj of objType) {
-      obj.update();
-      obj.draw();
+  // Update and draw all entities
+  for (const key in entities) {
+    const group = entities[key];
+
+    if (Array.isArray(group)) {
+      group.forEach((entity) => {
+        entity.update?.();
+        entity.draw?.();
+      });
+    } else if (group) {
+      group.update?.();
+      group.draw?.();
     }
   }
 
