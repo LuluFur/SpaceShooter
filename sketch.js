@@ -159,23 +159,24 @@ function draw() {
   }
 
   // Update and draw all GameObjects
-  for (const obj of gameObjects) {
-    obj.update();
-    obj.draw();
+for (const obj of gameObjects) {
+  obj.update();
+  obj.draw();
+}
 
-    // Handle collisions based on object type
-    if (obj instanceof Projectile) {
-      handleProjectileAsteroidCollisions(obj, gameObjects);
-      handleProjectilePlayerCollisions(obj, entities.player);
-      handleProjectileAlienCollisions(obj, gameObjects);
-    }
+  // Projectile Collisions
+  handleProjectileAsteroidCollisions(entities.player.projectiles, entities.asteroids);
+  handleProjectilePlayerCollisions(entities.player.projectiles, entities.player);
+  handleProjectileAlienCollisions(entities.player.projectiles, entities.aliens);
 
-    if (obj instanceof Asteroid) {
-      handleAsteroidProjectileCollisions(entities.asteroids, entities.player.projectiles);
-      handleAsteroidPlayerCollisions(entities.asteroids, entities.player);
-      handleAsteroidAlienCollisions(entities.asteroids, entities.aliens);
-    }
-  }
+  // Asteroid Collisions
+  handleAsteroidProjectileCollisions(entities.asteroids, entities.player.projectiles);
+  handleAsteroidPlayerCollisions(entities.asteroids, entities.player);
+  handleAsteroidAlienCollisions(entities.asteroids, entities.aliens);
+
+  // Same Slass-Type Collisions
+  handleAlienAlienCollisions(entities.aliens);
+  handleAsteroidAsteroidCollisions(entities.asteroids);
 
   // Remove destroyed asteroids
   entities.asteroids = entities.asteroids.filter((asteroid) => !asteroid.isDestroyed);
