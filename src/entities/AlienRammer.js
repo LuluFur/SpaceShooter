@@ -1,27 +1,29 @@
-//import{ Alien } from './Alien.js';
-//import{ GameObject } from './GameObject.js';
-//import{ getP5 } from '../game/p5Instance.js';
-//import{ Projectile } from './Projectile.js';
-//import{ entities, gameState } from '../game/GameState.js';
-//import{ playSound } from '../game/SoundManager.js';
-
 class AlienRammer extends Alien {
   constructor(x, y) {
-    super(x, y)
+    const collisionVertices = Alien.generateCollisionVertices(20);
+    super(x, y, collisionVertices, collisionVertices, {
+      restitution: 0.5,
+      friction: 0.05,
+    });
   }
 
-  shoot() {}
+  shoot() {
+    // AlienRammer does not shoot, so this method is intentionally left blank to override the functionality
+  }
 
   draw() {
+    const vertices = this.body.vertices;
     push();
-    translate(this.position.x, this.position.y);
-    rotate(radians(this.direction) + HALF_PI);
-    
-    // Stealth appearance
-    stroke(255, 80, 80); // High transparency
+    translate(this.body.position.x, this.body.position.y);
+    rotate(this.body.angle);
+
+    // Render the AlienRammer appearance
+    stroke(255, 80, 80); // Red color for ramming aliens
     strokeWeight(1);
     noFill();
-    triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
+    beginShape();
+    vertices.forEach((v) => vertex(v.x - this.body.position.x, v.y - this.body.position.y));
+    endShape(CLOSE);
 
     pop();
   }

@@ -14,6 +14,12 @@ const gameState = {
     "BOOM!", "BAM!", "CRASH!", "POW!", 
     "WHAM!", "PEW!", "BANG!", "POP!", 
     "YES!", "KA-POW!"
+  ],
+  damageTexts: [
+    "OUCH!", "YIKES!", "PAIN!", "NO!"
+  ],
+  defeatTexts: [
+    "ENEMY DOWN!", "NICE!", "TARGET DESTROYED!", "GOOD SHOT!"
   ]
 };
 

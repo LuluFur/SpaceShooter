@@ -1,8 +1,3 @@
-//import { GameObject } from './GameObject.js';
-//import { getP5 } from '../game/p5Instance.js';
-//import { entities } from '../game/GameState.js';
-//import { createBulletImpactDebris } from '../effects/EffectManager.js';
-
 class Projectile extends GameObject {
   constructor(x, y, velocity, player) {
     

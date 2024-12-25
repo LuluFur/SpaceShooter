@@ -1,13 +1,10 @@
-//import{ Alien } from './Alien.js';
-//import{ entities, gameState } from '../game/GameState.js';
-//import{ getP5 } from '../game/p5Instance.js';
-//import{ GameObject } from './GameObject.js';
-//import{ Projectile } from './Projectile.js';
-//import{ playSound } from '../game/SoundManager.js';
-
 class AlienStealth extends Alien {
   constructor(x, y) {
-    super(x, y);
+    const collisionVertices = Alien.generateCollisionVertices(20);
+    super(x, y, collisionVertices, collisionVertices, {
+      restitution: 0.5,
+      friction: 0.05,
+    });
 
     this.isVisible = false; // Stealth mode by default
     this.visibilityTimer = 0;
@@ -18,7 +15,7 @@ class AlienStealth extends Alien {
   }
 
   update() {
-    
+    if (!entities.player) return;
 
     // Handle visibility toggle
     const currentTime = millis();
@@ -34,9 +31,9 @@ class AlienStealth extends Alien {
       this.isFlashing = false; // End flashing after 200ms
     }
 
-    const angleToPlayer = atan2(
-      entities.player.position.y - this.position.y,
-      entities.player.position.x - this.position.x
+    const angleToPlayer = Matter.Vector.angle(
+      this.body.position,
+      entities.player.body.position
     );
 
     this.direction = degrees(angleToPlayer); // Update direction to face the player
@@ -46,34 +43,37 @@ class AlienStealth extends Alien {
       super.update();
     } else {
       // Hidden mode: faster movement and ramming behavior
-      const targetVelocity = createVector(
-        cos(angleToPlayer),
-        sin(angleToPlayer)
+      const targetVelocity = Matter.Vector.create(
+        Math.cos(angleToPlayer),
+        Math.sin(angleToPlayer)
       ).mult(this.maxSpeed * this.intelligenceLevel * 1.5); // Increased speed
 
-      this.velocity.lerp(targetVelocity, 0.2);
-      this.position.add(this.velocity);
+      Matter.Body.setVelocity(this.body, targetVelocity);
     }
   }
 
   draw() {
-    
+    const vertices = this.body.vertices;
     push();
-    translate(this.position.x, this.position.y);
-    rotate(radians(this.direction) + HALF_PI);
+    translate(this.body.position.x, this.body.position.y);
+    rotate(this.body.angle);
 
     if (this.isVisible || this.isFlashing) {
       // Normal appearance or flashing
       stroke(100, 100, 100, 255); // Solid color when visible
       strokeWeight(2);
       noFill();
-      triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
+      beginShape();
+      vertices.forEach((v) => vertex(v.x - this.body.position.x, v.y - this.body.position.y));
+      endShape(CLOSE);
     } else {
       // Stealth appearance
       stroke(50, 50, 50, 80); // High transparency
       strokeWeight(1);
       noFill();
-      triangle(0, -this.size, -this.size / 2, this.size, this.size / 2, this.size);
+      beginShape();
+      vertices.forEach((v) => vertex(v.x - this.body.position.x, v.y - this.body.position.y));
+      endShape(CLOSE);
     }
 
     pop();

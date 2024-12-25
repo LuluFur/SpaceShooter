@@ -1,5 +1,3 @@
-//import { getP5 } from '../game/p5Instance.js';
-
 class TextEffect {
   constructor({
     x,

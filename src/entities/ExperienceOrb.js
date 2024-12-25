@@ -1,75 +1,98 @@
-//import { GameObject } from './GameObject.js';
-//import { getP5 } from '../game/p5Instance.js';
-
 class XPOrb extends GameObject {
   constructor(x, y, xpValue) {
-    
-    super(x, y, 10, createVector(0, 0), 0);
+    const collisionVertices = GameObject.generateDefaultVertices(10); // Default circular shape
+    super(x, y, collisionVertices, collisionVertices, {
+      restitution: 0.5,
+      friction: 0.05,
+    });
+
     this.xpValue = xpValue;
     this.collectionRange = 150;
     this.attractionRange = 300;
     this.maxSpeed = 5;
     this.collected = false;
-    
+
     // Add some random initial velocity
-    const randomAngle = random(TWO_PI);
-    this.velocity = createVector(
-      cos(randomAngle),
-      sin(randomAngle)
+    const randomAngle = Math.random() * Math.PI * 2;
+    this.velocity = Matter.Vector.create(
+      Math.cos(randomAngle),
+      Math.sin(randomAngle)
     ).mult(2);
   }
 
   update(player) {
-    
     if (this.collected) return;
 
-    const distanceToPlayer = dist(
-      this.position.x, this.position.y,
-      player.position.x, player.position.y
+    const distanceToPlayer = Matter.Vector.magnitude(
+      Matter.Vector.sub(this.body.position, player.body.position)
     );
 
     // Check if within collection range
     if (distanceToPlayer < player.size) {
       player.addXP(this.xpValue);
       this.collected = true;
+      Matter.Composite.remove(world, this.body); // Remove from Matter.js world
       return;
     }
 
     // Move towards player if within attraction range
     if (distanceToPlayer < this.attractionRange) {
-      const direction = createVector(
-        player.position.x - this.position.x,
-        player.position.y - this.position.y
-      ).normalize();
+      const direction = Matter.Vector.normalise(
+        Matter.Vector.sub(player.body.position, this.body.position)
+      );
 
       // Increase attraction speed as orb gets closer
       const attractionStrength = map(
         distanceToPlayer,
-        0, this.attractionRange,
-        this.maxSpeed, 0.5
+        0,
+        this.attractionRange,
+        this.maxSpeed,
+        0.5
       );
 
-      direction.mult(attractionStrength);
-      this.velocity.lerp(direction, 0.1);
+      const attractionForce = Matter.Vector.mult(direction, attractionStrength);
+      this.body.velocity = Matter.Vector.add(
+        Matter.Vector.mult(this.body.velocity, 0.9), // Apply dampening
+        attractionForce
+      );
     }
 
-    // Apply velocity with some dampening
-    this.velocity.mult(0.98);
-    this.position.add(this.velocity);
+    // Apply velocity
+    Matter.Body.setVelocity(this.body, this.body.velocity);
 
     // Screen wrapping
-    if (this.position.x > width + this.size) this.position.x = -this.size;
-    else if (this.position.x < -this.size) this.position.x = width + this.size;
-    if (this.position.y > height + this.size) this.position.y = -this.size;
-    else if (this.position.y < -this.size) this.position.y = height + this.size;
+    if (this.body.position.x > width + this.size) {
+      Matter.Body.setPosition(this.body, {
+        x: -this.size,
+        y: this.body.position.y,
+      });
+    } else if (this.body.position.x < -this.size) {
+      Matter.Body.setPosition(this.body, {
+        x: width + this.size,
+        y: this.body.position.y,
+      });
+    }
+
+    if (this.body.position.y > height + this.size) {
+      Matter.Body.setPosition(this.body, {
+        x: this.body.position.x,
+        y: -this.size,
+      });
+    } else if (this.body.position.y < -this.size) {
+      Matter.Body.setPosition(this.body, {
+        x: this.body.position.x,
+        y: height + this.size,
+      });
+    }
   }
 
   draw() {
-    
     if (this.collected) return;
 
+    const pos = this.body.position;
+
     push();
-    translate(this.position.x, this.position.y);
+    translate(pos.x, pos.y);
 
     // Glow effect
     drawingContext.shadowBlur = 20;

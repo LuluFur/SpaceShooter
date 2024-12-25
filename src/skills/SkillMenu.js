@@ -1,6 +1,3 @@
-// import { gameState, entities } from '../game/GameState.js';
-// import { getP5 } from '../game/p5Instance.js';
-
 const skillSets = {
   offensive: {
     bulletDamage: {
@@ -153,7 +150,6 @@ function selectSkill(skillId) {
 }
 
 function openSkillMenu() {
-
   if (gameState.skillsToChoose.length === 0) return;
   console.log("leveled up");
   const selectedSkills = getRandomSkills(3);

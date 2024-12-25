@@ -1,7 +1,4 @@
-//import { gameState, entities } from './GameState.js';
-//import { Asteroid } from '../entities/Asteroid.js';
-
-function updateAsteroidSpawning(p5Instance) {
+function updateAsteroidSpawning() {
   if (entities.asteroids.length >= gameState.asteroidCap) return;
 
   let noiseOffset = noise(gameState.asteroidSpawnNoiseOffset) * 2 - 1;
@@ -9,7 +6,7 @@ function updateAsteroidSpawning(p5Instance) {
   let randomDelay = gameState.spawnDelay + noiseOffset * 1000;
 
   if (millis() > gameState.nextSpawnTime) {
-    spawnAsteroids(p5Instance);
+    spawnAsteroids();
     gameState.nextSpawnTime = millis() + randomDelay;
   }
 }

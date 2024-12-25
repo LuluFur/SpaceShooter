@@ -1,7 +1,3 @@
-// import { XPOrb } from '../entities/XPOrb.js';
-// import { entities } from './GameState.js';
-// import { getP5 } from './p5Instance.js';
-
 const MAX_XP_PER_ORB = 10;
 
 function spawnXPOrbs(x, y, totalXP) {
