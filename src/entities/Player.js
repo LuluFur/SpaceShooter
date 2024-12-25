@@ -80,7 +80,7 @@ class Player extends GameObject {
   move() {
     let targetPosition = createVector(mouseX, mouseY);
     let directionToMouse = targetPosition.sub(this.body.position).heading();
-    this.direction = degrees(directionToMouse);
+    this.direction = directionToMouse;
 
     if (mouseIsPressed && mouseButton === RIGHT) {
       let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
