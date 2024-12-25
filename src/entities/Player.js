@@ -164,7 +164,7 @@ class Player extends GameObject {
     const angle = this.body.angle;
 
     translate(pos.x, pos.y);
-    rotate(angle);
+    rotate(radians(angle));
 
     if (this.iFrames > 0) {
       if (Math.floor(this.iFrames / 4) % 2 === 0) {
