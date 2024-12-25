@@ -81,11 +81,23 @@ class Player extends GameObject {
     let targetPosition = createVector(mouseX, mouseY);
     let directionToMouse = targetPosition.sub(this.body.position).heading();
     this.direction = directionToMouse;
-
+  
     if (mouseIsPressed && mouseButton === RIGHT) {
       let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
       Matter.Body.applyForce(this.body, this.body.position, force);
-
+  
+      // Debugging: Draw a line showing the applied force
+      push();
+      stroke(255, 0, 0);
+      strokeWeight(2);
+      line(
+        this.body.position.x,
+        this.body.position.y,
+        this.body.position.x + force.x * 100,
+        this.body.position.y + force.y * 100
+      );
+      pop();
+  
       new ParticleEffect({
         x: this.body.position.x - cos(directionToMouse) * 15,
         y: this.body.position.y - sin(directionToMouse) * 15,
@@ -103,11 +115,12 @@ class Player extends GameObject {
         angleMax: degrees(directionToMouse) + 180 + 35,
       });
     }
-
+  
     // Limit speed
     const speed = Math.min(Matter.Vector.magnitude(this.body.velocity), this.speed);
     Matter.Body.setVelocity(this.body, Matter.Vector.mult(Matter.Vector.normalise(this.body.velocity), speed));
   }
+  
 
   update() {
     this.move();
