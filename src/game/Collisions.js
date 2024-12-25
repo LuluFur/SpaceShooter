@@ -32,6 +32,7 @@ function handleProjectileAsteroidCollisions(projectiles, asteroids) {
 
 function handleProjectilePlayerCollisions(projectiles, player) {
     for (const projectile of projectiles) {
+        if (!player) { return };
         if (projectile.collidingWith(player)) {
             if (projectile.player == player) { return; }
             player.applyDamage(projectile.damage || 10);
@@ -117,6 +118,7 @@ function handleProjectileAlienCollisions(projectiles, aliens) {
 
 function handleAsteroidPlayerCollisions(asteroids, player) {
     for (const asteroid of asteroids) {
+        if (!player) { return };
         if (Matter.SAT.collides(asteroid.body, player.body).collided) {
             player.applyDamage(asteroid.damage);
 
