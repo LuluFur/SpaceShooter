@@ -17,6 +17,7 @@ A 2D space shooter game built using **p5.js** and modern JavaScript. The player 
 
 ## 🛠️ Technologies Used
 - **p5.js** (1.9.0)
+- **Matter.js**
 - **p5.sound** Add-on
 - **HTML/CSS/JS**
 
