@@ -78,8 +78,20 @@ class Player extends GameObject {
   }
 
   move() {
+    // log
+    if (!this.body || !this.body.position) {
+      console.error("Player body position is invalid.");
+      return;
+    }
+
     let targetPosition = createVector(mouseX, mouseY);
     let directionToMouse = targetPosition.sub(this.body.position).heading();
+
+    // log
+    if (isNaN(directionToMouse)) {
+      console.error("Invalid direction to mouse:", directionToMouse);
+      return;
+    }
 
     // Calculate the current angle of the body
     let currentAngle = this.body.angle;
@@ -88,11 +100,19 @@ class Player extends GameObject {
     let angularDifference = directionToMouse - currentAngle;
     angularDifference = Math.atan2(Math.sin(angularDifference), Math.cos(angularDifference)); // Normalize to [-PI, PI]
 
+    // log
+    if (isNaN(angularDifference)) {
+      console.error("Invalid angular difference:", angularDifference);
+      return;
+    }
+
     // Define a proportional gain to control rotational speed
     const rotationalForce = 0.1; // Adjust for smoother or faster rotation
 
     // Set the angular velocity proportional to the angular difference
     Matter.Body.setAngularVelocity(this.body, angularDifference * rotationalForce);
+
+    console.log("Applied rotational force with angular difference:", angularDifference);
   
     if (mouseIsPressed && mouseButton === RIGHT) {
       let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
