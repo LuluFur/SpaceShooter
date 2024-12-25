@@ -3,8 +3,8 @@ class Asteroid extends GameObject {
     const collisionVertices = Asteroid.generateVertices(size, seed);
 
     super(x, y, collisionVertices, collisionVertices, {
-      restitution: 0.5,
-      friction: 0.05,
+      restitution: 1,
+      frictionAir: 0,
     });
 
     this.seed = seed;

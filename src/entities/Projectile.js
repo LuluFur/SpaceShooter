@@ -1,15 +1,14 @@
 class Projectile extends GameObject {
   constructor(x, y, velocity, player) {
     // Generate collision vertices for the projectile as a small circle
-    const size = 5;
-    this.drawVertices = GameObject.generateDefaultVertices(size);
-    const collisionVertices = GameObject.generateDefaultVertices(size);
-
     // Call GameObject constructor
     super(x, y, drawVertices, collisionVertices, {
-      frictionAir: 0.01,
+      frictionAir: 0,
       restitution: 1, // Perfectly elastic for bounces
     });
+    this.size = 5;
+    this.drawVertices = GameObject.generateDefaultVertices(size);
+    this.collisionVertices = GameObject.generateDefaultVertices(size);
 
     this.damage = 5;
     this.isDestroyed = false;
