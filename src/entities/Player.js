@@ -1,13 +1,8 @@
 class Player extends GameObject {
   constructor(x, y) {
-    const collisionVertices = Player.generateCollisionVertices(x, y, 20);
-    const drawVertices = Player.generateDrawVertices(20);
-
-    super(x, y, drawVertices, collisionVertices, {
-      restitution: 0.5,
-      friction: 0.05,
+    super(x, y, GameObjectVerticesLookup.Player(20), GameObjectVerticesLookup.Player(20), {
+      isStatic: false
     });
-    this.direction = 0;
 
     // Combat properties
     this.shootDelay = 500;
@@ -37,26 +32,6 @@ class Player extends GameObject {
     this.xpToNextLevel = 100;
     this.xpMultiplier = 1;
     this.xpCollectionRange = 300;
-  }
-
-  static generateCollisionVertices(x, y, size) {
-    const vertices = [];
-    for (let i = 0; i < 3; i++) {
-      const angle = i * (TWO_PI / 3) - HALF_PI;
-      vertices.push({
-        x: x + size * Math.cos(angle),
-        y: y + size * Math.sin(angle),
-      });
-    }
-    return vertices;
-  }
-
-  static generateDrawVertices(size) {
-    return [
-      { x: 0, y: -size },
-      { x: -size / 2, y: size },
-      { x: size / 2, y: size },
-    ];
   }
 
   heal(amount) {
@@ -92,7 +67,7 @@ class Player extends GameObject {
   applyDamage(damage) {
     if (this.iFrames > 0) return;
 
-    const reducedDamage = damage * (1 - this.damageReduction);
+    let reducedDamage = damage * (1 - this.damageReduction);
     this.health -= reducedDamage;
     this.health = Math.max(this.health, 0);
     this.iFrames = 60;
@@ -103,20 +78,17 @@ class Player extends GameObject {
   }
 
   move() {
-    const targetPosition = Matter.Vector.create(mouseX, mouseY);
-    const directionToMouse = Matter.Vector.angle(targetPosition, this.body.position);
-    this.direction = directionToMouse;
+    let targetPosition = createVector(mouseX, mouseY);
+    let directionToMouse = targetPosition.sub(this.body.position).heading();
+    this.direction = degrees(directionToMouse);
 
     if (mouseIsPressed && mouseButton === RIGHT) {
-      const force = Matter.Vector.create(
-        Math.cos(directionToMouse),
-        Math.sin(directionToMouse)
-      );
+      let force = createVector(cos(directionToMouse), sin(directionToMouse)).mult(0.1);
       Matter.Body.applyForce(this.body, this.body.position, force);
 
       new ParticleEffect({
-        x: this.body.position.x - Math.cos(directionToMouse) * 15,
-        y: this.body.position.y - Math.sin(directionToMouse) * 15,
+        x: this.body.position.x - cos(directionToMouse) * 15,
+        y: this.body.position.y - sin(directionToMouse) * 15,
         numParticles: 3,
         sizeMin: 6,
         sizeMax: 4,
@@ -134,10 +106,7 @@ class Player extends GameObject {
 
     // Limit speed
     const speed = Math.min(Matter.Vector.magnitude(this.body.velocity), this.speed);
-    Matter.Body.setVelocity(
-      this.body,
-      Matter.Vector.mult(Matter.Vector.normalise(this.body.velocity), speed)
-    );
+    Matter.Body.setVelocity(this.body, Matter.Vector.mult(Matter.Vector.normalise(this.body.velocity), speed));
   }
 
   update() {
@@ -157,16 +126,11 @@ class Player extends GameObject {
 
   shoot() {
     if (millis() - this.lastShotTime >= this.shootDelay / this.fireRate) {
-      const angle = Math.atan2(
-        mouseY - this.body.position.y,
-        mouseX - this.body.position.x
-      );
+      const angle = atan2(mouseY - this.body.position.y, mouseX - this.body.position.x);
       const spread = 10;
 
       // Generate bullet angles based on bullet count
-      const angles = [...Array(this.bulletCount).keys()].map(
-        (i) => angle + radians(i * spread - spread * (this.bulletCount - 1) / 2)
-      );
+      const angles = [...Array(this.bulletCount).keys()].map((i) => angle + radians(i * spread - spread * (this.bulletCount - 1) / 2));
 
       // Create projectiles
       angles.forEach((a) => {
@@ -174,12 +138,15 @@ class Player extends GameObject {
         const projectile = new Projectile(
           this.body.position.x,
           this.body.position.y,
-          Matter.Vector.mult(velocity, this.bulletSpeed),
-          this
+          GameObjectVerticesLookup.Player(this.bulletSize),
+          GameObjectVerticesLookup.Player(this.bulletSize),
+          {
+            velocity: Matter.Vector.mult(velocity, this.bulletSpeed),
+            damage: this.bulletDamage,
+            bouncesRemaining: this.bulletBounces,
+            player: this
+          }
         );
-        projectile.size = this.bulletSize;
-        projectile.damage = this.bulletDamage;
-        projectile.bouncesRemaining = this.bulletBounces;
         this.projectiles.push(projectile);
       });
 
@@ -193,11 +160,13 @@ class Player extends GameObject {
     }
 
     push();
-    translate(this.body.position.x, this.body.position.y);
+    const pos = this.body.position;
+    const angle = this.body.angle;
 
-    // Flash effect during iFrames
+    translate(pos.x, pos.y);
+    rotate(angle);
+
     if (this.iFrames > 0) {
-      // Flash every 4 frames
       if (Math.floor(this.iFrames / 4) % 2 === 0) {
         stroke(255, 0, 0); // Red flash
       } else {
@@ -220,14 +189,13 @@ class Player extends GameObject {
       }
     }
 
-    rotate(this.direction + 90);
-
     drawingContext.shadowBlur = 20;
     drawingContext.shadowColor = 'rgba(255, 255, 255, 0.5)';
-    drawingContext.shadowOffsetX = 0;
-    drawingContext.shadowOffsetY = 0;
 
-    triangle(0, -20, -10, 20, 10, 20);
+    const vertices = GameObjectVerticesLookup.Player(this.size);
+    beginShape();
+    vertices.forEach((v) => vertex(v.x, v.y));
+    endShape(CLOSE);
 
     drawingContext.shadowBlur = 0;
     pop();
