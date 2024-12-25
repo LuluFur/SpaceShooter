@@ -78,9 +78,14 @@ class Player extends GameObject {
   }
 
   move() {
-    // log
-    if (!this.body || !this.body.position) {
-      console.error("Player body position is invalid.");
+    // Ensure mouse and body positions are valid
+    if (isNaN(mouseX) || isNaN(mouseY)) {
+      console.error("Invalid mouse position:", mouseX, mouseY);
+      return;
+    }
+
+    if (!this.body || !this.body.position || isNaN(this.body.position.x) || isNaN(this.body.position.y)) {
+      console.error("Invalid body position:", this.body?.position);
       return;
     }
 
