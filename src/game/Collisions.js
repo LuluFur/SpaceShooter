@@ -231,3 +231,28 @@ function handleAsteroidAsteroidCollisions(asteroids) {
         }
     }
 }
+
+function handleAsteroidAlienCollisions(asteroids, aliens) {
+    for (const asteroid of asteroids) {
+        for (const alien of aliens) {
+            if (Matter.SAT.collides(asteroid.body, alien.body).collided) {
+                // Repulsion effect
+                const repulsionForce = Matter.Vector.normalise(
+                    Matter.Vector.sub(asteroid.body.position, alien.body.position)
+                );
+
+                Matter.Body.applyForce(
+                    asteroid.body,
+                    asteroid.body.position,
+                    Matter.Vector.mult(repulsionForce, 0.03)
+                );
+
+                Matter.Body.applyForce(
+                    alien.body,
+                    alien.body.position,
+                    Matter.Vector.mult(repulsionForce, -0.03)
+                );
+            }
+        }
+    }
+}

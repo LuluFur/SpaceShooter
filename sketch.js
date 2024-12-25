@@ -184,7 +184,7 @@ function draw() {
   handleAsteroidPlayerCollisions(entities.asteroids, entities.player);
   handleAsteroidAlienCollisions(entities.asteroids, entities.aliens);
 
-  // Same Slass-Type Collisions
+  // Same Class-Type Collisions
   handleAlienAlienCollisions(entities.aliens);
   handleAsteroidAsteroidCollisions(entities.asteroids);
 
