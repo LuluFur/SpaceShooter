@@ -159,10 +159,12 @@ function draw() {
   }
 
   // Update and draw all GameObjects
-for (const obj of gameObjects) {
-  obj.update();
-  obj.draw();
-}
+  for (const objType of entities) {
+    for (const obj of objType) {
+      obj.update();
+      obj.draw();
+    }
+  }
 
   // Projectile Collisions
   handleProjectileAsteroidCollisions(entities.player.projectiles, entities.asteroids);
