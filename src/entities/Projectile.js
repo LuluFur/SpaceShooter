@@ -11,7 +11,7 @@ class Projectile extends GameObject {
     this.damage = 5;
     this.isDestroyed = false;
     this.speed = 1;
-    this.velocity = velocity.copy().mult(this.speed); // Initial velocity
+    this.velocity = velocity; // Initial velocity with bulletSpeed applied
     Matter.Body.setVelocity(this.body, { x: this.velocity.x, y: this.velocity.y });
 
     this.player = player;
