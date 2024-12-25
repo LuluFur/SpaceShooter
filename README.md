@@ -2,6 +2,8 @@
 
 A 2D space shooter game built using **p5.js** and modern JavaScript. The player controls a spaceship, dodges asteroids, shoots enemies, and collects XP to level up.
 
+https://lulufur.github.io/SpaceShooter/
+
 ---
 
 ## 🎮 Features
