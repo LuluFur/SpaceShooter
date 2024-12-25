@@ -7,6 +7,7 @@ class Player extends GameObject {
       restitution: 0.5,
       friction: 0.05,
     });
+    this.direction = 0;
 
     // Combat properties
     this.shootDelay = 500;
@@ -104,6 +105,7 @@ class Player extends GameObject {
   move() {
     const targetPosition = Matter.Vector.create(mouseX, mouseY);
     const directionToMouse = Matter.Vector.angle(targetPosition, this.body.position);
+    this.direction = directionToMouse;
 
     if (mouseIsPressed && mouseButton === RIGHT) {
       const force = Matter.Vector.create(
