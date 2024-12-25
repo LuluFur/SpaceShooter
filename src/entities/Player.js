@@ -149,11 +149,11 @@ class Player extends GameObject {
       angles.forEach((a) => {
         const velocity = Matter.Vector.create(Math.cos(a), Math.sin(a));
         const scaledVelocity = Matter.Vector.mult(velocity, this.bulletSpeed);
-        
+
         const projectile = new Projectile(
           this.body.position.x,
           this.body.position.y,
-          velocity,
+          scaledVelocity,
           this,
           {
             velocity: Matter.Vector.mult(velocity, this.bulletSpeed),
