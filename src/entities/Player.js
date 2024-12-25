@@ -151,8 +151,8 @@ class Player extends GameObject {
         const projectile = new Projectile(
           this.body.position.x,
           this.body.position.y,
-          GameObjectVerticesLookup.Player(this.bulletSize),
-          GameObjectVerticesLookup.Player(this.bulletSize),
+          velocity,
+          this,
           {
             velocity: Matter.Vector.mult(velocity, this.bulletSpeed),
             damage: this.bulletDamage,
